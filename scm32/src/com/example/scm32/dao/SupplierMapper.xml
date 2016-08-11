@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.example.scm32.dao.SupplierMapper" >
+  <resultMap id="supplierResultMap" type="com.example.scm32.entity.Supplier" >
+    <id column="sup_id" property="supId" jdbcType="INTEGER" />
+    <result column="sup_name" property="supName" jdbcType="VARCHAR" />
+    <result column="sup_linkman" property="supLinkman" jdbcType="VARCHAR" />
+    <result column="sup_phone" property="supPhone" jdbcType="VARCHAR" />
+    <result column="sup_address" property="supAddress" jdbcType="VARCHAR" />
+    <result column="sup_remark" property="supRemark" jdbcType="VARCHAR" />
+    <result column="sup_pay" property="supPay"/>
+    <result column="sup_type" property="supType"/>
+  </resultMap>
+  <!-- 增加 -->
+  <insert id="insert" parameterType="Supplier" >
+  	insert into supplier(sup_id,sup_name,sup_linkman,sup_phone,sup_address,sup_remark,sup_pay,sup_type) 
+  				  values(#{supId},#{supName},#{supLinkman},#{supPhone},#{supAddress},#{supRemark},#{supPay},#{supType})
+  </insert>
+  <!-- 删除 -->
+  <delete id="delete" parameterType="Supplier">
+  	delete from supplier where sup_id = #{supId}
+  </delete>
+  <!-- 修改 -->
+  <update id="update" parameterType="supplier" >
+		update supplier set
+		sup_name=#{supName},sup_linkman=#{supLinkman},sup_phone=#{supPhone},
+		sup_address=#{supAddress},sup_remark=#{supRemark},sup_type=#{supType},sup_pay=#{supPay}
+		where
+		sup_id=#{supId}	
+	</update>
+  <!-- 主键查询 查询时应避免使用*，只需查询出需要的相应字段即可-->
+  <select id="select" parameterType="Supplier" resultMap="supplierResultMap">
+  	select * from supplier where sup_id = #{supId}
+  </select>
+  <!-- 查询所有  查询时应避免使用*，只需查询出需要的相应字段即可-->
+  <select id="selectList" resultMap="supplierResultMap">
+  	select * from supplier 
+  </select>
+  <!-- 分页查询 查询列表 -->
+  <select id="selectPageList" parameterType="page" resultMap="supplierResultMap">
+  		 select * from supplier where sup_name like #{keyWord} limit #{start},#{rows}
+  </select>
+  <!-- 分页查询 查询总记录数 -->
+  <select id="selectPageCount" parameterType="page" resultType="Integer">
+  		select count(1) from supplier where sup_name like #{keyWord}
+  </select>
+  <!-- 多条件分页查询 查询列表 -->
+  <select id="selectPageListUseDyc" parameterType="page" resultMap="supplierResultMap">
+  		 select * from supplier 
+  		<where>
+  		 	<if test="paramEntity.supName!=null">
+  		 	and sup_name like #{paramEntity.supName}
+  		 	</if>
+  		 	<if test="paramEntity.supAddress!=null">and sup_address like #{paramEntity.supAddress}</if>
+  		 </where>
+  		 limit #{start},#{rows}
+  </select>
+  <!-- 多条件分页查询 查询总记录数 -->
+  <select id="selectPageCountUseDyc" parameterType="page" resultType="Integer">
+  		select count(1) from supplier
+		<where>
+  		 	<if test="paramEntity.supName!=null">and sup_name like #{paramEntity.supName}</if>
+  		 	<if test="paramEntity.supAddress!=null">and sup_address like #{paramEntity.supAddress}</if>
+  		 </where>
+  </select>
+  
+  <!-- 删除功能的实现，同时删除多条记录  -->
+  <delete id="deleteList">
+  	delete from supplier where sup_id in
+  	<foreach collection="array" open="(" close=")" separator="," item="pk">
+  		#{pk}
+  	</foreach>
+  </delete>
+  
+</mapper>
