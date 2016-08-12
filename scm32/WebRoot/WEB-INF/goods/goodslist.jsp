@@ -139,7 +139,11 @@
 			}, {
 				field : 'goodsColor',
 				title : '商品颜色',
-				width : 100
+				width : 100,
+				formatter: function(value,row,index){
+					var str = "${applicationScope.sysParam.goodsColor}";			
+					return valueToText(str,value);				
+				}
 			} ] ]
 		});
 		
